@@ -26,14 +26,13 @@ int main()
         {7, 70.0, "Equipo de golf"},
     };
 
-    FILE *PF = fopen("Articulos.dat", "rb"); // Abre el archivo binario "Articulos.dat" en modo de lectura ("rb") y asigna el puntero al archivo a la variable PF.
-    if (PF == NULL)
+    FILE *pf = fopen("Articulos.dat", "rb"); // Abre el archivo binario "Articulos.dat" en modo de lectura ("rb") y asigna el puntero al archivo a la variable PF.
+    if (pf == NULL)
     {                                            // Verifica si el archivo no se pudo abrir (es decir, si PF es NULL).
         printf("Error al abrir el archivo. \n"); // Si el archivo no se pudo abrir, imprime un mensaje de error.
     }
     Articulo aux;
-    fseek(PF, sizeof(Articulo), SEEK_SET); // Declara una variable aux de tipo Articulo, que servirá para almacenar los datos leídos del archivo.
-    fread(&aux, sizeof(Articulo), 1, PF);  // Lee un registro de tamaño "sizeof(Articulo)" desde el archivo apuntado por PF y lo almacena en aux.
+    fread(&aux, sizeof(Articulo), 1, pf);  // Lee un registro de tamaño "sizeof(Articulo)" desde el archivo apuntado por PF y lo almacena en aux.
     printf("----------EL articulo solicitado es-----------    \n");
     printf("CODIGO_ARTICULO : %d \n", aux.codART);             // Imprime el código del artículo almacenado en aux.codART.
     printf("PRECIO_ARTICULO : %.2f \n", aux.precio);           // Imprime el precio del artículo almacenado en aux.precio, con dos decimales.
