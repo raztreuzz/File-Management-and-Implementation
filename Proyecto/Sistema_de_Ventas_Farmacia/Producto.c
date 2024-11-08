@@ -1,5 +1,5 @@
 // productos.c
-#include "productos.h"
+#include "producto.h"
 #include <stdio.h>
 
 void listar_productos(MYSQL *conn) {
@@ -17,9 +17,15 @@ void listar_productos(MYSQL *conn) {
         return;
     }
 
-    printf("ID\tNombre\tPrecio\tCantidad\n");
+    // Imprimir los encabezados con alineación
+    printf("-----------------------------------------------\n");
+    printf("%-5s %-20s %-10s %-10s\n", "ID", "Nombre", "Precio", "Cantidad");
+    printf("-----------------------------------------------\n");
+
+    // Mostrar cada producto con formato alineado
     while ((row = mysql_fetch_row(res)) != NULL) {
-        printf("%s\t%s\t%s\t%s\n", row[0], row[1], row[2], row[3]);
+        // Ajuste para que las columnas se mantengan alineadas
+        printf("%-5s %-20s %-10s %-10s\n", row[0], row[1], row[2], row[3]);
     }
 
     mysql_free_result(res);

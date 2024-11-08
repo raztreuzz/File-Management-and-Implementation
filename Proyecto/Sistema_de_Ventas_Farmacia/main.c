@@ -1,11 +1,14 @@
-
-// main.c
 #include <stdio.h>
 #include <stdlib.h>
-#include "conn.h"
-#include "productos.h"
+#include "db_connection.h"
+#include "producto.h"
+#include "clientes.h"
+#include "ventas.h"
+#include "detalles.h"
 
 void mostrar_menu() {
+    printf("----------------------------------------\n"); //
+    printf("--- Sistema de Ventas Farmacia ---\n");
     printf("1. Listar productos\n");
     printf("2. Agregar producto\n");
     printf("3. Actualizar producto\n");
@@ -14,7 +17,14 @@ void mostrar_menu() {
 }
 
 int main() {
-    MYSQL *conn = initialize_db();
+    // Conectar a la base de datos
+    DBConnection *db = db_connect("localhost", "root", "4613", "Farmacia", 3306); 
+
+    if (db == NULL) {
+        fprintf(stderr, "No se pudo conectar a la base de datos.\n");
+        return 1;
+    }
+
     int opcion;
 
     do {
@@ -24,7 +34,7 @@ int main() {
 
         switch (opcion) {
             case 1:
-                listar_productos(conn);
+                listar_productos(db->conn);  // Pasar db->conn a las funciones
                 break;
             case 2: {
                 char nombre[100];
@@ -36,7 +46,7 @@ int main() {
                 scanf("%lf", &precio);
                 printf("Cantidad del producto: ");
                 scanf("%d", &cantidad);
-                agregar_producto(conn, nombre, precio, cantidad);
+                agregar_producto(db->conn, nombre, precio, cantidad);
                 break;
             }
             case 3: {
@@ -49,14 +59,14 @@ int main() {
                 scanf("%lf", &nuevo_precio);
                 printf("Nueva cantidad: ");
                 scanf("%d", &nueva_cantidad);
-                actualizar_producto(conn, id, nuevo_precio, nueva_cantidad);
+                actualizar_producto(db->conn, id, nuevo_precio, nueva_cantidad);
                 break;
             }
             case 4: {
                 int id;
                 printf("ID del producto a eliminar: ");
                 scanf("%d", &id);
-                eliminar_producto(conn, id);
+                eliminar_producto(db->conn, id);
                 break;
             }
             case 5:
@@ -68,6 +78,7 @@ int main() {
 
     } while (opcion != 5);
 
-    close_db(conn);
+    // Desconectar de la base de datos
+    db_disconnect(db);  
     return 0;
 }
