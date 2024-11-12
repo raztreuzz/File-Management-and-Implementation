@@ -2,7 +2,7 @@
 #define CARRITO_H
 
 #include <mysql/mysql.h>
-#include "producto.h"
+#include "producto.h"  // Incluye la definición de Producto
 
 #define MAX_PRODUCTOS 100
 
@@ -16,17 +16,15 @@ typedef struct {
 
 // Definición de la estructura para representar el carrito
 typedef struct {
-    Producto producto;
-    CarritoProducto productos[MAX_PRODUCTOS];  // Ajusta el tamaño según sea necesario
+    CarritoProducto productos[MAX_PRODUCTOS];  // Productos en el carrito
     int num_productos;               // Número de productos en el carrito
     float total;                     // Total de la compra
 } Carrito;
 
 // Declaración de las funciones
-int agregar_producto_carrito(MYSQL *conn, Carrito *carrito, int id_producto, int cantidad);
+void agregar_producto_carrito(MYSQL *conn, Carrito *carrito, int id_producto, int cantidad);
 void mostrar_carrito(Carrito *carrito);
 void vaciar_carrito(Carrito *carrito);
 
-
-
 #endif // CARRITO_H
+

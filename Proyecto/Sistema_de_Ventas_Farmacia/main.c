@@ -286,44 +286,57 @@ void menu_inventario(MYSQL *conn)
 void simular_compra(MYSQL *conn, int id_cliente)
 {
     Carrito carrito = {0}; // Inicializar el carrito vacío
-
     int id_producto, cantidad;
+    char continuar = 's';
 
-    // Simulación de agregar productos al carrito
-    printf("Simulación de compra para el cliente ID: %d\n", id_cliente);
-
-    while (1)
+    while (continuar == 's' || continuar == 'S')
     {
-        printf("Ingrese el ID del producto que desea agregar al carrito (0 para terminar): ");
+        printf("\nSeleccione un producto para agregar al carrito:\n");
+
+        // Aquí deberíamos obtener una lista de productos desde la base de datos y mostrarlos
+        MYSQL_RES *res;
+        MYSQL_ROW row;
+        if (mysql_query(conn, "SELECT id_producto, nombre, precio FROM Productos"))
+        {
+            printf("Error al obtener los productos: %s\n", mysql_error(conn));
+            return;
+        }
+
+        res = mysql_store_result(conn);
+        if (res == NULL)
+        {
+            printf("Error al obtener el resultado: %s\n", mysql_error(conn));
+            return;
+        }
+
+        // Mostrar los productos disponibles
+        printf("%-10s | %-30s | %-10s\n", "ID Producto", "Nombre", "Precio");
+        printf("----------------------------------------------\n");
+        while ((row = mysql_fetch_row(res)) != NULL)
+        {
+            printf("%-10s | %-30s | %-10s\n", row[0], row[1], row[2]);
+        }
+
+        mysql_free_result(res);
+
+        // Solicitar al usuario que seleccione un producto y una cantidad
+        printf("\nIngrese el ID del producto: ");
         scanf("%d", &id_producto);
-
-        if (id_producto == 0)
-        {
-            break; // Si se ingresa 0, terminamos de agregar productos
-        }
-
-        // Obtener la información del producto desde la base de datos
-        Producto producto = obtener_producto(conn, id_producto); // Obtiene los detalles del producto
-        if (producto.id_producto == 0)
-        {
-            printf("Producto no encontrado.\n");
-            continue;
-        }
-
-        printf("Producto seleccionado: %s, Precio: %.2f\n", producto.nombre, producto.precio);
-
-        // Pedir la cantidad de productos
-        printf("Ingrese la cantidad que desea comprar: ");
+        printf("Ingrese la cantidad: ");
         scanf("%d", &cantidad);
 
         // Agregar el producto al carrito
         agregar_producto_carrito(conn, &carrito, id_producto, cantidad);
 
-        // Mostrar el carrito actualizado
-        mostrar_carrito(&carrito);
+        // Preguntar si quiere continuar agregando productos
+        printf("\n¿Desea agregar otro producto al carrito? (s/n): ");
+        scanf(" %c", &continuar); // Usamos " %c" para leer el carácter con espacio antes
     }
 
-    // Registrar la venta con el carrito acumulado
+    // Mostrar el contenido del carrito
+    mostrar_carrito(&carrito);
+
+    // Al finalizar la compra, registrar la venta para el cliente
     registrar_venta(conn, id_cliente, &carrito);
 }
 
@@ -381,7 +394,7 @@ void menu_ventas(MYSQL *conn)
         case 1:
             printf("Ingrese el ID del cliente: ");
             scanf("%d", &id_cliente);
-            simular_compra(conn, id_cliente);
+            simular_compra(conn,id_cliente);
             break;
         case 2:
             listar_ventas(conn); // Llamamos a listar_ventas para ver el registro de ventas
