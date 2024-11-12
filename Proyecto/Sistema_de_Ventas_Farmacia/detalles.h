@@ -4,9 +4,18 @@
 
 #include <mysql/mysql.h>
 
-// Funciones para manipular la tabla de detalles de ventas
+// Estructura para los detalles de una venta
+typedef struct {
+    int id_detalle;
+    int id_venta;
+    int id_producto;
+    int cantidad;
+    float precio_unitario;
+} DetalleVenta;
+
+// Funciones para manejar los detalles de venta
 void listar_detalles(MYSQL *conn);
-void agregar_detalle(MYSQL *conn, int id_venta, int id_producto, int cantidad);
+void agregar_detalle(MYSQL *conn, DetalleVenta detalle);
 void eliminar_detalle(MYSQL *conn, int id_detalle);
 
-#endif // DETALLES_H
+#endif

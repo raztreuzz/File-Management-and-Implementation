@@ -17,17 +17,18 @@ void listar_detalles(MYSQL *conn) {
         return;
     }
 
-    printf("ID Detalle\tID Venta\tID Producto\tCantidad\n");
+    printf("ID Detalle\tID Venta\tID Producto\tCantidad\tPrecio Unitario\n");
     while ((row = mysql_fetch_row(res)) != NULL) {
-        printf("%s\t%s\t%s\t%s\n", row[0], row[1], row[2], row[3]);
+        printf("%s\t%s\t%s\t%s\t%s\n", row[0], row[1], row[2], row[3], row[4]);
     }
 
     mysql_free_result(res);
 }
 
-void agregar_detalle(MYSQL *conn, int id_venta, int id_producto, int cantidad) {
+void agregar_detalle(MYSQL *conn, DetalleVenta detalle) {
     char query[256];
-    sprintf(query, "INSERT INTO Detalles_Venta (id_venta, id_producto, cantidad) VALUES (%d, %d, %d)", id_venta, id_producto, cantidad);
+    sprintf(query, "INSERT INTO Detalles_Venta (id_venta, id_producto, cantidad, precio_unitario) VALUES (%d, %d, %d, %.2f)",
+            detalle.id_venta, detalle.id_producto, detalle.cantidad, detalle.precio_unitario);
 
     if (mysql_query(conn, query)) {
         fprintf(stderr, "%s\n", mysql_error(conn));

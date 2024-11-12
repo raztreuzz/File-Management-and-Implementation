@@ -4,9 +4,19 @@
 
 #include <mysql/mysql.h>
 
-// Funciones para manipular la tabla de ventas
+// Estructura para una venta
+typedef struct {
+    int id_venta;
+    int id_cliente;
+    char fecha[20];  // Suponiendo que la fecha es un string con formato 'YYYY-MM-DD'
+    float total;
+    char forma_pago[20];
+} Venta;
+
+// Funciones para manejar las ventas
 void listar_ventas(MYSQL *conn);
-void agregar_venta(MYSQL *conn, int id_cliente, const char *fecha);
+void agregar_venta(MYSQL *conn, Venta venta);
 void eliminar_venta(MYSQL *conn, int id_venta);
 
-#endif // VENTAS_H
+#endif
+

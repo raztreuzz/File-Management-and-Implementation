@@ -1,13 +1,20 @@
-// productos.h
-#ifndef PRODUCT_H
+// producto.h
+#ifndef PRODUCTO_H
 #define PRODUCTO_H
 
 #include <mysql/mysql.h>
 
-// Funciones para manipular la tabla de productos
+typedef struct {
+    int id_producto;
+    char nombre[50];
+    double precio;
+    int cantidad;
+} Producto;
+
+// Funciones de inventario
 void listar_productos(MYSQL *conn);
-void agregar_producto(MYSQL *conn, const char *nombre, double precio, int cantidad);
-void actualizar_producto(MYSQL *conn, int id_producto, double nuevo_precio, int nueva_cantidad);
+void agregar_producto(MYSQL *conn, Producto producto);
+void actualizar_producto(MYSQL *conn, Producto producto);
 void eliminar_producto(MYSQL *conn, int id_producto);
 
-#endif // PRODUCTO_H
+#endif
